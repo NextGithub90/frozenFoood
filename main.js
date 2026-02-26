@@ -157,13 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Build WA message
-      let waMsg = `Halo Nada Agen Sosis, saya ingin menghubungi Anda.\n\n`;
-      waMsg += `*Nama:* ${name}\n`;
-      waMsg += `*WhatsApp:* ${wa}\n`;
-      if (email) waMsg += `*Email:* ${email}\n`;
-      waMsg += `\n*Pesan:*\n${msg}`;
+      let waMsg = `Halo Nada Agen Sosis 👋\n\n`;
+      waMsg += `Nama: ${name}\n`;
+      waMsg += `No WA: ${wa}\n`;
+      waMsg += `Email: ${email || '-'}\n`;
+      waMsg += `\nPesan:\n${msg}\n\n`;
+      waMsg += `Dikirim dari halaman Kontak Website`;
 
-      const waUrl = `https://wa.me/6287815991605?text=${encodeURIComponent(waMsg)}`;
+      const waUrl = `https://wa.me/6287733399900?text=${encodeURIComponent(waMsg)}`;
       window.open(waUrl, '_blank');
 
       showToast('Pesan Anda sedang diarahkan ke WhatsApp!', 'success');
