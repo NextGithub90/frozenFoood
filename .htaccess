@@ -1,0 +1,20 @@
+# Security: Protect sensitive files
+# Nada Agen Sosis - .htaccess
+
+# Deny access to config file
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Deny access to SQL file
+<Files "database.sql">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default charset
+AddDefaultCharset UTF-8

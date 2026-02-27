@@ -1,5 +1,5 @@
 // ========== MAIN.JS ==========
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   // === AOS Init ===
   if (typeof AOS !== 'undefined') {
@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hamburger.classList.toggle('active');
       document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     });
-    // Close on link click
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenu.classList.remove('active');
@@ -38,16 +37,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // === HOME PAGE: Populate grids ===
+  // === LOAD PRODUCTS & CATEGORIES FROM API ===
+  if (typeof loadProducts === 'function') {
+    await loadProducts();
+  }
+  if (typeof loadCategories === 'function') {
+    await loadCategories();
+  }
+
+  // === HOME PAGE: Populate categories grid dynamically ===
+  const categoriesGrid = document.getElementById('categoriesGrid');
+  if (categoriesGrid && CATEGORIES.length > 0) {
+    categoriesGrid.innerHTML = CATEGORIES.map((cat, i) => createCategoryCard(cat, i * 100)).join('');
+    if (typeof AOS !== 'undefined') AOS.refresh();
+  }
+
+  // === PRODUK PAGE: Populate category filter checkboxes dynamically ===
+  const categoryFilters = document.getElementById('categoryFilters');
+  if (categoryFilters && CATEGORIES.length > 0) {
+    let html = '<h4>Kategori</h4>';
+    CATEGORIES.forEach(cat => {
+      html += `<label><input type="checkbox" class="filter-checkbox filter-category" value="${cat.name}"> ${cat.name}</label>`;
+    });
+    categoryFilters.innerHTML = html;
+
+    // Re-bind filter events
+    categoryFilters.querySelectorAll('.filter-checkbox').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (typeof renderCatalog === 'function') renderCatalog();
+      });
+    });
+  }
+
+  // === HOME PAGE: Populate product grids ===
   const bestSellerGrid = document.getElementById('bestSellerGrid');
   const newProductGrid = document.getElementById('newProductGrid');
 
-  if (bestSellerGrid && typeof PRODUCTS !== 'undefined') {
+  if (bestSellerGrid && PRODUCTS.length > 0) {
     const bestSellers = PRODUCTS.filter(p => p.isBestSeller);
     bestSellerGrid.innerHTML = bestSellers.map((p, i) => createProductCard(p, i * 80)).join('');
   }
 
-  if (newProductGrid && typeof PRODUCTS !== 'undefined') {
+  if (newProductGrid && PRODUCTS.length > 0) {
     const newProducts = PRODUCTS.filter(p => p.isNew);
     newProductGrid.innerHTML = newProducts.map((p, i) => createProductCard(p, i * 80)).join('');
   }
@@ -69,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderCatalog() {
-    if (!catalogGrid || typeof PRODUCTS === 'undefined') return;
+    if (!catalogGrid || PRODUCTS.length === 0) return;
 
     let filtered = [...PRODUCTS];
 
@@ -164,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       waMsg += `\nPesan:\n${msg}\n\n`;
       waMsg += `Dikirim dari halaman Kontak Website`;
 
-      const waUrl = `https://wa.me/6287733399900?text=${encodeURIComponent(waMsg)}`;
+      const waUrl = `https://wa.me/62877333999?text=${encodeURIComponent(waMsg)}`;
       window.open(waUrl, '_blank');
 
       showToast('Pesan Anda sedang diarahkan ke WhatsApp!', 'success');
