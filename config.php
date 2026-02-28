@@ -25,11 +25,11 @@ if ($isLocal) {
     define('DB_USER', 'root');
     define('DB_PASS', '');
 } else {
-    // HOSTING (Rumahweb cPanel)
+    // HOSTING (Hostinger)
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'movh6621_agen');
-    define('DB_USER', 'movh6621_agen');
-    define('DB_PASS', 'agen123#');
+    define('DB_NAME', 'u251231747_agen');
+    define('DB_USER', 'u251231747_agen');
+    define('DB_PASS', 'Agen12345#');
 }
 
 // ===== APP CONFIG =====
