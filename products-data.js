@@ -3,8 +3,10 @@
 
 let PRODUCTS = [];
 let CATEGORIES = [];
+let BRANDS = [];
 let productsLoaded = false;
 let categoriesLoaded = false;
+let brandsLoaded = false;
 
 // Static fallback categories
 const CATEGORIES_FALLBACK = [
@@ -12,6 +14,18 @@ const CATEGORIES_FALLBACK = [
   { id: 2, name: "Nugget", slug: "nugget", icon: "🍗", description: "Nugget ayam renyah & lezat" },
   { id: 3, name: "Bakso", slug: "bakso", icon: "🥩", description: "Bakso daging segar & kenyal" },
   { id: 4, name: "Frozen Lainnya", slug: "lainnya", icon: "❄️", description: "Lumpia, dimsum, & lainnya" }
+];
+
+// Static fallback brands
+const BRANDS_FALLBACK = [
+  { id: 1, name: "Kanzler", description: "Brand sosis premium asal Jerman" },
+  { id: 2, name: "Fiesta", description: "Produk frozen food populer Indonesia" },
+  { id: 3, name: "So Nice", description: "Sosis dan olahan ayam praktis" },
+  { id: 4, name: "Champ", description: "Frozen food untuk anak-anak" },
+  { id: 5, name: "Bernardi", description: "Produk daging olahan premium" },
+  { id: 6, name: "Cedea", description: "Produk seafood frozen berkualitas" },
+  { id: 7, name: "So Good", description: "Olahan ayam dan daging terpercaya" },
+  { id: 8, name: "Aviko", description: "Kentang goreng impor premium" }
 ];
 
 // Static fallback data (original products)
@@ -61,6 +75,20 @@ async function loadCategories() {
     console.warn('Categories API not available, using fallback:', e.message);
     CATEGORIES = CATEGORIES_FALLBACK;
     categoriesLoaded = true;
+  }
+}
+
+// Load brands from API
+async function loadBrands() {
+  try {
+    const response = await fetch('api/brands.php');
+    if (!response.ok) throw new Error('API error');
+    BRANDS = await response.json();
+    brandsLoaded = true;
+  } catch (e) {
+    console.warn('Brands API not available, using fallback:', e.message);
+    BRANDS = BRANDS_FALLBACK;
+    brandsLoaded = true;
   }
 }
 

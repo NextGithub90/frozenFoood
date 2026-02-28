@@ -7,11 +7,11 @@
     Deny from all
 </Files>
 
-# Deny access to SQL file
-<Files "database.sql">
+# Deny access to SQL files
+<FilesMatch "\.(sql)$">
     Order Allow,Deny
     Deny from all
-</Files>
+</FilesMatch>
 
 # Prevent directory listing
 Options -Indexes

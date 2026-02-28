@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof loadCategories === 'function') {
     await loadCategories();
   }
+  if (typeof loadBrands === 'function') {
+    await loadBrands();
+  }
 
   // === HOME PAGE: Populate categories grid dynamically ===
   const categoriesGrid = document.getElementById('categoriesGrid');
@@ -63,6 +66,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Re-bind filter events
     categoryFilters.querySelectorAll('.filter-checkbox').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (typeof renderCatalog === 'function') renderCatalog();
+      });
+    });
+  }
+
+  // === PRODUK PAGE: Populate brand filter checkboxes dynamically ===
+  const brandFilters = document.getElementById('brandFilters');
+  if (brandFilters && BRANDS.length > 0) {
+    let html = '<h4>Brand</h4>';
+    BRANDS.forEach(br => {
+      html += `<label><input type="checkbox" class="filter-checkbox filter-brand" value="${br.name}"> ${br.name}</label>`;
+    });
+    brandFilters.innerHTML = html;
+
+    // Re-bind filter events
+    brandFilters.querySelectorAll('.filter-checkbox').forEach(cb => {
       cb.addEventListener('change', () => {
         if (typeof renderCatalog === 'function') renderCatalog();
       });
@@ -243,7 +263,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle hash for category scroll
   if (window.location.hash && catalogGrid) {
     const hash = window.location.hash.replace('#', '').toLowerCase();
-    const categoryMap = { sosis: 'Sosis', nugget: 'Nugget', bakso: 'Bakso', lainnya: 'Frozen Lainnya' };
+    // Build category map dynamically from loaded CATEGORIES data
+    const categoryMap = {};
+    if (CATEGORIES && CATEGORIES.length > 0) {
+      CATEGORIES.forEach(cat => {
+        categoryMap[cat.slug.toLowerCase()] = cat.name;
+      });
+    }
     if (categoryMap[hash]) {
       const checkbox = document.querySelector(`.filter-category[value="${categoryMap[hash]}"]`);
       if (checkbox) {

@@ -9,6 +9,7 @@ requireLogin();
 // Get stats
 $totalProducts = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
 $totalCategories = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
+$totalBrands = $pdo->query("SELECT COUNT(*) FROM brands")->fetchColumn();
 $totalBestSellers = $pdo->query("SELECT COUNT(*) FROM products WHERE is_best_seller = 1")->fetchColumn();
 $totalNewProducts = $pdo->query("SELECT COUNT(*) FROM products WHERE is_new = 1")->fetchColumn();
 
@@ -44,6 +45,7 @@ $recentProducts = $pdo->query("SELECT p.*, c.name as category_name FROM products
             <a href="index.php" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
             <a href="products.php"><i class="bi bi-box-seam-fill"></i> Produk</a>
             <a href="categories.php"><i class="bi bi-tags-fill"></i> Kategori</a>
+            <a href="brands.php"><i class="bi bi-award-fill"></i> Brand</a>
             <a href="best-sellers.php"><i class="bi bi-fire"></i> Paling Laris</a>
             <div class="nav-section">Lainnya</div>
             <a href="../index.html" target="_blank"><i class="bi bi-globe2"></i> Lihat Website</a>
@@ -128,6 +130,8 @@ $recentProducts = $pdo->query("SELECT p.*, c.name as category_name FROM products
                         Tambah Produk</a>
                     <a href="categories.php" class="btn-admin btn-admin-outline"><i class="bi bi-tags"></i> Kelola
                         Kategori</a>
+                    <a href="brands.php" class="btn-admin btn-admin-outline"><i class="bi bi-award"></i> Kelola
+                        Brand</a>
                     <a href="best-sellers.php" class="btn-admin btn-admin-outline"><i class="bi bi-fire"></i> Kelola
                         Best Seller</a>
                 </div>

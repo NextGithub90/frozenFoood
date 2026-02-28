@@ -58,6 +58,7 @@ $otherProducts = $pdo->query("SELECT p.*, c.name as category_name FROM products 
             <a href="index.php"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
             <a href="products.php"><i class="bi bi-box-seam-fill"></i> Produk</a>
             <a href="categories.php"><i class="bi bi-tags-fill"></i> Kategori</a>
+            <a href="brands.php"><i class="bi bi-award-fill"></i> Brand</a>
             <a href="best-sellers.php" class="active"><i class="bi bi-fire"></i> Paling Laris</a>
             <div class="nav-section">Lainnya</div>
             <a href="../index.html" target="_blank"><i class="bi bi-globe2"></i> Lihat Website</a>

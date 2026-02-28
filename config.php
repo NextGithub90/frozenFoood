@@ -2,28 +2,56 @@
 // ========================================
 // CONFIG: Nada Agen Sosis
 // ========================================
-// PANDUAN cPanel Rumahweb:
-// 1. Buat database di cPanel → MySQL Databases
-// 2. Buat user database di cPanel → MySQL Databases
-// 3. Assign user ke database (ALL PRIVILEGES)
-// 4. Isi kredensial di bawah sesuai yang dibuat di cPanel
+// Otomatis support: XAMPP (lokal) + Rumahweb (hosting)
+// Tidak perlu ubah apapun, tinggal upload!
 // ========================================
 
 session_start();
 
+// ===== ENVIRONMENT DETECTION =====
+$httpHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$isLocal = (
+    $httpHost === 'localhost' ||
+    $httpHost === '127.0.0.1' ||
+    strpos($httpHost, 'localhost:') === 0 ||
+    strpos($httpHost, '127.0.0.1:') === 0
+);
+
 // ===== DATABASE CONFIG =====
-// Format cPanel: namaakuncpanel_namadb
-// Contoh: nadafood_frozen_db
-// GANTI NILAI DI BAWAH SESUAI cPANEL ANDA:
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'movh6621_agen');
-define('DB_USER', 'movh6621_agen');
-define('DB_PASS', 'agen123#');
+if ($isLocal) {
+    // LOCAL (XAMPP / PHP built-in server)
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'nada_frozen_db');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+} else {
+    // HOSTING (Rumahweb cPanel)
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'movh6621_agen');
+    define('DB_USER', 'movh6621_agen');
+    define('DB_PASS', 'agen123#');
+}
 
 // ===== APP CONFIG =====
-// Jika website di domain utama (public_html), gunakan '/'
-// Saat ini: agen.movaindonesia.com (langsung di root domain)
-define('BASE_URL', '/');
+if ($isLocal) {
+    // Auto-detect BASE_URL untuk XAMPP (subdirectory di htdocs)
+    // Contoh: jika folder di htdocs/frozenFoood/, BASE_URL = '/frozenFoood/'
+    // Jika pakai php -S localhost:8080, BASE_URL = '/'
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+    // Cari root project (folder yang berisi config.php)
+    $configDir = str_replace('\\', '/', __DIR__);
+    $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? '');
+    if ($docRoot && strpos($configDir, $docRoot) === 0) {
+        $basePath = substr($configDir, strlen($docRoot));
+        define('BASE_URL', rtrim($basePath, '/') . '/');
+    } else {
+        define('BASE_URL', '/');
+    }
+} else {
+    // Hosting: langsung di root domain
+    define('BASE_URL', '/');
+}
+
 define('UPLOAD_DIR', __DIR__ . '/uploads/products/');
 define('UPLOAD_URL', 'uploads/products/');
 

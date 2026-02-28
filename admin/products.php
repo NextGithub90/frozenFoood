@@ -9,6 +9,9 @@ requireLogin();
 // Get categories for form
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
+// Get brands for form
+$brands = $pdo->query("SELECT * FROM brands ORDER BY name")->fetchAll();
+
 // Determine action
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -21,7 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($postAction === 'add') {
         $name = trim($_POST['name'] ?? '');
         $category_id = (int) ($_POST['category_id'] ?? 0);
-        $brand = trim($_POST['brand'] ?? '');
+        $brand_id = (int) ($_POST['brand_id'] ?? 0);
+        // Get brand name from brands table
+        $brandStmt = $pdo->prepare("SELECT name FROM brands WHERE id = ?");
+        $brandStmt->execute([$brand_id]);
+        $brand = $brandStmt->fetchColumn() ?: '';
         $desc = trim($_POST['description'] ?? '');
         $weight = trim($_POST['weight'] ?? '');
         $storage = trim($_POST['storage'] ?? 'Disimpan beku (-18°C)');
@@ -41,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $stmt = $pdo->prepare("INSERT INTO products (name, category_id, brand, description, weight, storage, price, img, halal, badge, is_new, is_best_seller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $category_id, $brand, $desc, $weight, $storage, $price, $img, $halal, $badge, $is_new, $is_best_seller]);
+        $stmt = $pdo->prepare("INSERT INTO products (name, category_id, brand_id, brand, description, weight, storage, price, img, halal, badge, is_new, is_best_seller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $category_id, $brand_id ?: null, $brand, $desc, $weight, $storage, $price, $img, $halal, $badge, $is_new, $is_best_seller]);
 
         setFlash('success', "Produk \"$name\" berhasil ditambahkan!");
         redirect(BASE_URL . 'admin/products.php');
@@ -53,7 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int) ($_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $category_id = (int) ($_POST['category_id'] ?? 0);
-        $brand = trim($_POST['brand'] ?? '');
+        $brand_id = (int) ($_POST['brand_id'] ?? 0);
+        // Get brand name from brands table
+        $brandStmt = $pdo->prepare("SELECT name FROM brands WHERE id = ?");
+        $brandStmt->execute([$brand_id]);
+        $brand = $brandStmt->fetchColumn() ?: '';
         $desc = trim($_POST['description'] ?? '');
         $weight = trim($_POST['weight'] ?? '');
         $storage = trim($_POST['storage'] ?? 'Disimpan beku (-18°C)');
@@ -74,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $stmt = $pdo->prepare("UPDATE products SET name=?, category_id=?, brand=?, description=?, weight=?, storage=?, price=?, img=?, halal=?, badge=?, is_new=?, is_best_seller=? WHERE id=?");
-        $stmt->execute([$name, $category_id, $brand, $desc, $weight, $storage, $price, $img, $halal, $badge, $is_new, $is_best_seller, $id]);
+        $stmt = $pdo->prepare("UPDATE products SET name=?, category_id=?, brand_id=?, brand=?, description=?, weight=?, storage=?, price=?, img=?, halal=?, badge=?, is_new=?, is_best_seller=? WHERE id=?");
+        $stmt->execute([$name, $category_id, $brand_id ?: null, $brand, $desc, $weight, $storage, $price, $img, $halal, $badge, $is_new, $is_best_seller, $id]);
 
         setFlash('success', "Produk \"$name\" berhasil diperbarui!");
         redirect(BASE_URL . 'admin/products.php');
@@ -206,6 +217,7 @@ $products = $stmt->fetchAll();
             <a href="index.php"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
             <a href="products.php" class="active"><i class="bi bi-box-seam-fill"></i> Produk</a>
             <a href="categories.php"><i class="bi bi-tags-fill"></i> Kategori</a>
+            <a href="brands.php"><i class="bi bi-award-fill"></i> Brand</a>
             <a href="best-sellers.php"><i class="bi bi-fire"></i> Paling Laris</a>
             <div class="nav-section">Lainnya</div>
             <a href="../index.html" target="_blank"><i class="bi bi-globe2"></i> Lihat Website</a>
@@ -268,8 +280,17 @@ $products = $stmt->fetchAll();
                                 </div>
                                 <div class="form-group">
                                     <label>Brand <span class="required">*</span></label>
-                                    <input type="text" name="brand" class="form-control" required
-                                        value="<?= h($editProduct['brand'] ?? '') ?>" placeholder="Contoh: Kanzler, Fiesta">
+                                    <select name="brand_id" class="form-control" required>
+                                        <option value="">-- Pilih Brand --</option>
+                                            <?php foreach ($brands as $br): ?>
+                                                    <option value="<?= $br['id'] ?>" <?= (($editProduct['brand_id'] ?? '') == $br['id']) ? 'selected' : '' ?>>
+                                                        <?= h($br['name']) ?>
+                                                    </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <small style=" color:var(--admin-dark-400);margin-top:4px;display:block">Brand
+                                            belum ada? <a href="brands.php" style="color:var(--admin-primary)">Tambah brand
+                                                baru</a></small>
                                 </div>
                             </div>
 
