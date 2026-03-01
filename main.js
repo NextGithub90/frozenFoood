@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       waMsg += `\nPesan:\n${msg}\n\n`;
       waMsg += `Dikirim dari halaman Kontak Website`;
 
-      const waUrl = `https://wa.me/62877333999?text=${encodeURIComponent(waMsg)}`;
+      const waUrl = `https://wa.me/6287769554433?text=${encodeURIComponent(waMsg)}`;
       window.open(waUrl, '_blank');
 
       showToast('Pesan Anda sedang diarahkan ke WhatsApp!', 'success');

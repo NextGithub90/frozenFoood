@@ -106,7 +106,7 @@ function createCategoryCard(cat, delay) {
 // Helper to generate WA message
 function getWaLink(productName) {
   const msg = encodeURIComponent(`Halo Nada Agen Sosis, saya ingin memesan *${productName}*. Apakah stok tersedia?`);
-  return `https://wa.me/62877333999?text=${msg}`;
+  return `https://wa.me/6287769554433?text=${msg}`;
 }
 
 // Create product card HTML
